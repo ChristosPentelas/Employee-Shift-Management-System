@@ -31,13 +31,8 @@ public class ShiftController {
     }
 
     @GetMapping("/shifts")
-    public ResponseEntity<?> getAllShifts(){
-        try {
-            List<Shift> allShifts = shiftService.getAllShifts();
-            return new ResponseEntity<>(allShifts, HttpStatus.OK);
-        }catch (RuntimeException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    public ResponseEntity<List<Shift>> getAllShifts(){
+        return ResponseEntity.ok(shiftService.getAllShifts());
     }
 
     @GetMapping("/users/{userId}/shifts")

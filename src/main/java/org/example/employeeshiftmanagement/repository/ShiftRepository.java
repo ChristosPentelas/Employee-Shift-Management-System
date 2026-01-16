@@ -13,4 +13,5 @@ public interface ShiftRepository extends JpaRepository<Shift, Integer> {
     List<Shift> findByUserId(Integer userId);
 
     List<Shift> findByUserIdAndDateBetweenOrderByDateAsc(Integer userId, LocalDate startDate, LocalDate endDate);
+    //We implement the schedule, we take the shifts in a specific time period sorted from the closest to the furthest
 }

@@ -1,5 +1,6 @@
 package org.example.employeeshiftmanagement.model;
 
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Getter
 @Setter
@@ -15,27 +15,30 @@ import java.time.LocalTime;
 @AllArgsConstructor
 
 @Entity
-@Table(name="shifts")
-public class Shift {
+@Table(name="leaves_requests")
+public class LeaveRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(nullable = false)
-    private LocalDate date;//We use LocalDate to store only day/month/year
+    private LocalDate startDate;
 
     @Column(nullable = false)
-    private LocalTime startTime;//Separating the date from the time makes the code more readable.
+    private LocalDate endDate;
 
     @Column(nullable = false)
-    private LocalTime endTime;
+    private String reason;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String position;
+    private LeaveStatus status = LeaveStatus.PENDING;
 
-    @ManyToOne//Many shifts belong to one user
-    @JoinColumn(name="user_id",nullable = false)//We create the foreign key for the users in shifts table
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+
 
 }
