@@ -1,7 +1,9 @@
 package org.example.employeeshiftmanagement.repository;
 
+import jakarta.transaction.Transactional;
 import org.example.employeeshiftmanagement.model.Message;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,4 +21,12 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
                                                                                          Integer senderId2,Integer receiverId2);
 
     List<Message> findByReceiverIdAndIsReadFalse(Integer receiverId);
+
+    @Modifying
+    @Transactional
+    void deleteBySenderId(Integer senderId);
+
+    @Modifying
+    @Transactional
+    void deleteByReceiverId(Integer receiverId);
 }

@@ -1,5 +1,6 @@
 package org.example.employeeshiftmanagement.controller;
 
+import org.example.employeeshiftmanagement.dto.LoginRequest;
 import org.example.employeeshiftmanagement.model.User;
 import org.example.employeeshiftmanagement.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -41,8 +42,16 @@ public class UserController {
         }catch (RuntimeException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
 
-
+    @GetMapping("/search")
+    public ResponseEntity<User> getUserByEmail(@RequestParam String email) {
+        try {
+            User user = userService.findUserByEmail(email);
+            return ResponseEntity.ok(user);
+        }catch (RuntimeException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PutMapping("/{userId}")
@@ -61,8 +70,19 @@ public class UserController {
             userService.deleteUser(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }catch (RuntimeException e){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            e.printStackTrace(); // Θα δεις το πραγματικό λάθος στο IntelliJ
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        User user = userService.findUserByEmail(loginRequest.getEmail());
+
+        if (user !=null && user.getPassword().equals(loginRequest.getPassword())) {
+            return ResponseEntity.ok(user);
+        }else
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Λάθος email ή password");
     }
 
 }

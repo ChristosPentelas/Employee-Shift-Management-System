@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/leaves")
 public class LeaveRequestController {
 
     private final LeaveRequestService leaveRequestService;
@@ -21,10 +21,10 @@ public class LeaveRequestController {
 
     //endpoints for EMPLOYEES
 
-    @PostMapping("/users/{userId}/leaves")
-    public ResponseEntity<?> createLeave(@PathVariable Integer userId, @RequestBody LeaveRequest request) {
+    @PostMapping
+    public ResponseEntity<?> createLeave(@RequestBody LeaveRequest request) {
         try{
-            LeaveRequest newRequest = leaveRequestService.createLeaveRequest(userId, request);
+            LeaveRequest newRequest = leaveRequestService.createLeaveRequest(request);
             return new ResponseEntity<>(newRequest, HttpStatus.CREATED);
         }catch (RuntimeException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -45,12 +45,12 @@ public class LeaveRequestController {
 
     //endpoints for SUPERVISOR
 
-    @GetMapping("/leaves")
+    @GetMapping
     public ResponseEntity<List<LeaveRequest>> getAllLeaves() {
         return ResponseEntity.ok(leaveRequestService.getAllLeaveRequests());
     }
 
-    @GetMapping("/leaves/filter")
+    @GetMapping("/filter")
     public ResponseEntity<?> filterLeaves(@RequestParam LeaveStatus status,
                                                @RequestParam(required = false) Integer userId) {
         try{
@@ -65,7 +65,7 @@ public class LeaveRequestController {
     }
 
 
-    @PutMapping("/leaves/{requestId}/status")
+    @PutMapping("/{requestId}/status")
     public ResponseEntity<?> updateLeaveStatus(@PathVariable Integer requestId, @RequestParam LeaveStatus status) {
         try{
             LeaveRequest updated = leaveRequestService.updateLeaveRequest(requestId, status);

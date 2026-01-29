@@ -1,8 +1,13 @@
 package org.example.employeeshiftmanagement.service;
 
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.example.employeeshiftmanagement.model.User;
 import org.example.employeeshiftmanagement.repository.UserRepository;
+import org.example.employeeshiftmanagement.repository.MessageRepository;
+import org.example.employeeshiftmanagement.repository.ShiftRepository;
+import org.example.employeeshiftmanagement.repository.LeaveRequestRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,7 +15,17 @@ import java.util.Optional;
 @Service
 public class UserService {
 
+    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private MessageRepository messageRepository;
+
+    @Autowired
+    private LeaveRequestRepository leaveRequestRepository;
+
+    @Autowired
+    private ShiftRepository shiftRepository;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -23,6 +38,11 @@ public class UserService {
 
     public User findUserById(Integer id) {
         return userRepository.findById(id).
+                orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email).
                 orElseThrow(() -> new RuntimeException("User not found"));
     }
 
@@ -56,14 +76,22 @@ public class UserService {
         user.setEmail(userDetails.getEmail());
         user.setName(userDetails.getName());
         user.setPhoneNumber(userDetails.getPhoneNumber());
-        user.setPassword(userDetails.getPassword());
+
 
         return userRepository.save(user);
 
     }
 
+
+    @Transactional
     public void deleteUser(Integer id) {
         User user = findUserById(id);
+
+        messageRepository.deleteBySenderId(user.getId());
+        messageRepository.deleteByReceiverId(user.getId());
+        leaveRequestRepository.deleteByUserId(user.getId());
+        shiftRepository.deleteByUserId(user.getId());
+
         userRepository.delete(user);
     }
 }

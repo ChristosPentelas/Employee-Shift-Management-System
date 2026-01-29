@@ -35,7 +35,7 @@ public class ShiftController {
         return ResponseEntity.ok(shiftService.getAllShifts());
     }
 
-    @GetMapping("/users/{userId}/shifts")
+    @GetMapping("/shifts/users/{userId}")
     public ResponseEntity<?> getShiftsByUser(@PathVariable Integer userId) {
         try {
             List<Shift> shifts = shiftService.getShiftsByEmployee(userId);

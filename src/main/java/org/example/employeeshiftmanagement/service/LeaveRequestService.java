@@ -19,9 +19,9 @@ public class LeaveRequestService {
         this.userService = userService;
     }
 
-    public LeaveRequest createLeaveRequest(Integer userId,LeaveRequest request) {
-        User user = userService.findUserById(userId);
-        request.setUser(user);
+    public LeaveRequest createLeaveRequest(LeaveRequest request) {
+
+
         request.setStatus(LeaveStatus.PENDING);
         return leaveRequestRepository.save(request);
     }

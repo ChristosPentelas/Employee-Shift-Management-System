@@ -20,9 +20,9 @@ public class NewsItemController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createNews(@RequestBody NewsItem newsItem, @RequestParam Integer authorId) {
+    public ResponseEntity<?> createNews(@RequestBody NewsItem newsItem) {
         try{
-            NewsItem item = newsItemService.createNewsItem(newsItem,authorId);
+            NewsItem item = newsItemService.createNewsItem(newsItem);
             return new ResponseEntity<>(item, HttpStatus.CREATED);
         }catch(Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

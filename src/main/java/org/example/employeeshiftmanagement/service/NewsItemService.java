@@ -19,8 +19,8 @@ public class NewsItemService {
         this.userService = userService;
     }
 
-    public NewsItem createNewsItem(NewsItem newsItem,Integer authorId) {
-        User author = userService.findUserById(authorId);
+    public NewsItem createNewsItem(NewsItem newsItem) {
+        User author = userService.findUserById(newsItem.getAuthor().getId());
         newsItem.setAuthor(author);
         return newsItemRepository.save(newsItem);
     }
