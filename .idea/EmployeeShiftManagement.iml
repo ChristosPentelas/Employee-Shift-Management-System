@@ -2,6 +2,9 @@
 <module version="4">
   <component name="AdditionalModuleElements">
     <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/frontend/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/frontend/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/frontend/build" />
       <excludeFolder url="file://$MODULE_DIR$/frontend/employee_shift_management_ui/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/frontend/employee_shift_management_ui/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/frontend/employee_shift_management_ui/build" />
