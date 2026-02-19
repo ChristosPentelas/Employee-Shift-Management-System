@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../utils/session.dart';
 import '../services/api_service.dart';
+import '../screens/login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -87,8 +88,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           IconButton(
             icon: Icon(Icons.logout),
             onPressed: () {
-              Session.currentUser = null;
-              Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+              Session.currentUser = null; //
+
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => LoginScreen()),
+                    (Route<dynamic> route) => false,
+              );
             },
           )
         ],

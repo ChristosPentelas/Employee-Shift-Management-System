@@ -14,31 +14,32 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
   late Future<List<User>> _employeesFuture;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _employeesFuture = _apiService.getAllEmployees();
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Λίστα Υπαλλήλων"), backgroundColor: Colors.blue[800]),
+      appBar: AppBar(
+          title: Text("Λίστα Υπαλλήλων"), backgroundColor: Colors.blue[800]),
       body: FutureBuilder<List<User>>(
         future: _employeesFuture,
-        builder: (context,snapshot){
+        builder: (context, snapshot) {
           // Waiting for data
-          if(snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
-          }else if(snapshot.hasError){ //if error corrupt
+          } else if (snapshot.hasError) { //if error corrupt
             return Center(child: Text("Σφάλμα: ${snapshot.error}"));
-          }else if(!snapshot.hasData || snapshot.data!.isEmpty) {
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(child: Text("Δεν βρέθηκαν υπάλληλοι."));
           }
 
           List<User> employees = snapshot.data!;
           return ListView.builder(
             itemCount: employees.length,
-            itemBuilder: (context,index){
+            itemBuilder: (context, index) {
               User emp = employees[index];
               return Card(
                 margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -48,10 +49,11 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
                     backgroundColor: Colors.blue[100],
                     child: Text(emp.name[0].toUpperCase()),
                   ),
-                  title: Text(emp.name,style: TextStyle(fontWeight: FontWeight.bold)),
+                  title: Text(
+                      emp.name, style: TextStyle(fontWeight: FontWeight.bold)),
                   subtitle: Text("${emp.role} • ${emp.email}"),
                   trailing: Icon(Icons.chevron_right),
-                  onTap: () async{
+                  onTap: () async {
                     final result = await Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -71,78 +73,7 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
           );
         },
       ),
-      floatingActionButton: Session.isSupervisor()
-        ? FloatingActionButton(
-          onPressed: () async{
-            final User? newUser = await _showSearchEmployeeDialog(context);
 
-            if (newUser !=  null){
-              setState(() {
-                _employeesFuture = _employeesFuture.then((List<User> list) {
-
-                  List<User> updatedList = List.from(list);
-                  updatedList.add(newUser);
-                  return updatedList;
-                });
-              });
-
-
-            }
-          },
-          child: Icon(Icons.add),
-          backgroundColor: Colors.blue[800],
-          )
-          : null,
-    );
-  }
-
-  User? _showSearchEmployeeDialog(BuildContext context)  {
-    final _searchController = TextEditingController();
-    User? _foundUser;
-
-    showDialog(
-      context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setDialogState) => AlertDialog(
-          title: Text("Αναζήτηση Υπαλλήλου"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  labelText: "Εισάγετε Email",
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.search),
-                    onPressed: () async {
-                      var user = await _apiService.findUserByEmail(_searchController.text);
-                      setDialogState(() {_foundUser = user;});
-                    },
-                  ),
-                ),
-              ),
-              if(_foundUser != null) ...[
-                SizedBox(height: 20),
-                ListTile(
-                  leading: CircleAvatar(child: Text(_foundUser!.name[0])),
-                  title: Text(_foundUser!.name),
-                  subtitle: Text(_foundUser!.email),
-                ),
-              ]
-            ],
-          ),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(context), child: Text("Ακύρωση")),
-            if (_foundUser != null)
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context,_foundUser);
-                },
-                child: Text("Προσθήκη"),
-              ),
-          ],
-        ),
-      ),
     );
   }
 }
